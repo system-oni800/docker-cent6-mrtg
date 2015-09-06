@@ -1,0 +1,12 @@
+/var/log/monit.log
+{
+    daily
+    rotate 30
+    missingok
+    compress
+    olddir  /var/log/archive
+    sharedscripts
+    postrotate
+	/usr/bin/monit reload 2> /dev/null || true
+    endscript
+}

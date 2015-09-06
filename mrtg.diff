@@ -1,0 +1,19 @@
+--- /etc/mrtg/mrtg.cfg
+@@ -5,7 +5,7 @@
+ ### Global Config Options
+ 
+ #  for UNIX
+-# WorkDir: /home/http/mrtg
++WorkDir: /var/www/mrtg
+ 
+ #  or for NT
+ # WorkDir: c:\mrtgdata
+@@ -13,7 +13,7 @@
+ ### Global Defaults
+ 
+ #  to get bits instead of bytes and graphs growing to the right
+-# Options[_]: growright, bits
++Options[_]: growright, noinfo
+ 
+ EnableIPv6: no
+ 
