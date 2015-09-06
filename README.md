@@ -38,7 +38,7 @@ set httpd port 2812 and
   
 ```sh
   # ./build.sh 
-   ・・
+   ....
   # docker images
   REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
   centos6             mrtg                54b06fdd740b        About an hour ago   858.9 MB
@@ -59,12 +59,12 @@ set httpd port 2812 and
 ```
   [root@a618599f2e4f /]# ./set.sh
   ip address = 172.17.2.XX
-   ・・
+   ....
   Reload monit..
   Reinitializing monit daemon
   USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
   root         1  0.3  0.1  56744  2632 ?        Ssl+ 14:15   0:00 /usr/bin/monit -I
-  ・・
+  ....
   root       189  0.0  0.0 110232  1148 ?        R+   14:16   0:00 ps aux
   End of script(/root/mk-mrtg.sh).
 ```
