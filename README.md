@@ -53,10 +53,11 @@ set httpd port 2812 and
   CONTAINER ID        IMAGE                      COMMAND               CREATED             STATUS              PORTS                                                                 NAMES
   a618599f2e4f        centos6:mrtg               "/usr/bin/monit -I"   4 seconds ago       Up 3 seconds        0.0.0.0:8022->22/tcp, 0.0.0.0:8080->80/tcp, 0.0.0.0:12812->2812/tcp   mrtg                
   # docker exec -it mrtg /bin/bash   ...
-  [root@a618599f2e4f /]# cd /root
+  [root@a618599f2e4f /]# 
 ```
  Set IP address(internal) to configuration files and go.
 ```
+  [root@a618599f2e4f /]# cd /root
   [root@a618599f2e4f /]# ./set.sh
   ip address = 172.17.2.XX
    ....
