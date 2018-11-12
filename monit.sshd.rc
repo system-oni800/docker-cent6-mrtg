@@ -1,0 +1,3 @@
+check process ssh with pidfile /run/sshd.pid
+  start program = "/bin/systemctl start sshd"
+  stop  program = "/bin/systemctl stop sshd"

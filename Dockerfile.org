@@ -1,0 +1,63 @@
+FROM centos:latest
+LABEL MAINTAINER system-oni800
+
+ENV IP _SET_IP_   # set to allow IP to access monit mgr
+ENV PW adminpass00
+ENV MONITPW monitpass
+
+## Step01. set yum/rpm environment for mrtg
+# Refresh
+RUN yum clean all
+RUN yum update -y -q
+RUN yum install -y -q sudo openssh-server syslog wget httpd httpd-devel net-snmp net-snmp-utils mrtg yum-cron patch
+RUN yum install -y epel-release
+#RUN yum install -y --enablerepo=epel monit
+RUN rpm -ivh http://ftp.riken.jp/Linux/fedora/epel/7/x86_64/Packages/m/monit-5.25.1-1.el7.x86_64.rpm
+
+RUN localedef -f UTF-8 -i ja_JP ja_JP
+RUN cp /etc/localtime /etc/localtime.org
+RUN ln -sf  /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && echo 'ZONE="Asia/Tokyo"' > /etc/sysconfig/clock
+
+## Step02. set configuration files 
+ADD monit.httpd.rc /etc/monit.d/httpd.rc
+ADD monit.sshd.rc /etc/monit.d/sshd.rc
+ADD monit.crond.rc /etc/monit.d/crond.rc
+ADD monit.logging /etc/monit.d/logging
+
+#ADD httpd.conf /etc/httpd/conf/httpd.conf
+RUN mv /etc/monitrc /root/
+ADD monit.conf /etc/monitrc
+RUN chown -R root:root /etc/monit.d/  /etc/monitrc
+RUN chmod -R 600 /etc/monitrc
+
+## Step03. secure monit/td-agent environment
+RUN sed -ri "s/%%IPADDRESS%%/$IP/" /etc/monitrc
+RUN sed -ri "s/%%PASSWORD%%/$MONITPW/" /etc/monitrc
+
+ADD snmpd.conf /etc/snmp/snmpd.conf
+
+## Step05. confgure mrtg environments.
+RUN mv /etc/mrtg/mrtg.cfg /etc/mrtg/mrtg.cfg.org
+ADD mrtg.cfg /etc/mrtg/mrtg.cfg
+ADD mrtg.diff /root/mrtg.diff
+RUN mkdir /var/log/mrtg
+
+ADD set.sh /root/set.sh
+ADD mk-mrtg.sh /root/mk-mrtg.sh
+ADD mrtg.sh /root/mrtg.sh
+RUN chmod 755 /root/set.sh /root/mk-mrtg.sh /root/mrtg.sh
+
+## Step06. set httpd environments.
+RUN mv /etc/httpd/conf.d/mrtg.conf /etc/httpd/conf.d/mrtg.conf.org
+ADD mrtg-httpd.conf /etc/httpd/conf.d/mrtg.conf
+RUN chmod 755 /var/log/httpd
+RUN touch /etc/sysconfig/network
+
+## Step08. configure log rotate
+ADD httpd.logrotated     /etc/logrotate.d/httpd
+ADD monit.logrotated     /etc/logrotate.d/monit
+ADD syslog.logrotated    /etc/logrptate.d/syslog
+RUN mkdir /var/log/archive
+
+EXPOSE 80 2812 161/UDP 162/UDP 
+
